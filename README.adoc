@@ -77,6 +77,7 @@ In the first shell (in YugaByte folder) run
 ./bin/yb-ctl add_node
 ----
 In the other shell (sample app folder) you should see the Yugabyte module reporting it found the new node and initialize a connection pool to it.
+
 NOTE: This might take a few seconds based on the flags set above.
 
 You can use the app (load or show entries) _during_ these operations.

@@ -1,0 +1,110 @@
+= Spring Data YugaByteDB Example
+
+Sample Spring application using the cluster-aware https://github.com/yugabyte/spring-data-yugabytedb[YugabyteDB Spring-data module].
+
+== Usage:
+
+=== 1. Install YugabyteDB
+
+See full instructions https://docs.yugabyte.com/latest/quick-start/install/[here].
+For instance on macOS:
+[source,sh]
+----
+wget https://downloads.yugabyte.com/yugabyte-2.0.0.0-darwin.tar.gz
+tar xvfz yugabyte-2.0.0.0-darwin.tar.gz && cd yugabyte-2.0.0.0/
+./bin/yb-ctl --rf 3 create --tserver_flags="cql_nodelist_refresh_interval_secs=10" --master_flags="tserver_unresponsive_timeout_ms=10000"
+----
+
+This will create a 3-node local cluster with replication factor `3`.
+The additional tserver and master flags lower some default flags to expedite demo steps below
+
+- notify the drivers of node changes at least every `10` seconds.
+
+- assume a node (tserver) is dead after it is unresponsive for `10` seconds or more.
+
+=== 2. Download and start this sample app
+
+In another shell run
+[source, sh]
+----
+git clone https://github.com/yugabyte/spring-data-yugabytedb-example.git
+cd spring-data-yugabytedb-example
+mvn spring-boot:run
+----
+
+=== 3. Load Data
+
+The `loaddb` endpoint will auto-generate and load customers into the customers table.
+
+==== Examples
+
+- Add `10` new customers (default amount).
+----
+http://localhost:8080/loaddb
+----
+
+- Add `100` new customers.
+----
+http://localhost:8080/loaddb?amount=100
+----
+
+NOTE: To inspect or modify the database with direct `SQL` commands you can just run `./bin/ysqlsh` from the Yugabyte
+download folder to connect to the cluster.
+
+
+=== 4. Show data
+
+The `showdb` endpoint will show a paginated (page size `20`) view of the customers table.
+
+==== Examples
+- To show the first `20` rows
+----
+http://localhost:8080/showdb
+----
+
+- To show rows `61-80`
+----
+http://localhost:8080/showdb?page=3
+----
+
+
+=== 5. Add a node
+
+In the first shell (in YugaByte folder) run
+
+[source,sh]
+----
+./bin/yb-ctl add_node
+----
+In the other shell (sample app folder) you should see the Yugabyte module reporting it found the new node and initialize a connection pool to it.
+NOTE: This might take a few seconds based on the flags set above.
+
+You can use the app (load or show entries) _during_ these operations.
+
+=== 6. Remove a node
+
+In the first shell (in YugaByte folder) run
+
+[source,sh]
+----
+./bin/yb-ctl remove_node 3
+----
+
+In the other shell (sample app folder) you should see the Yugabyte module reporting it discovered that a node is down and shutting down the connection pool for it.
+
+NOTE: This might take a few seconds based on the flags set above.
+In the meantime, atempting to use any already-open connections to the killed node will naturally throw errors.
+Generally to handle (avoid) that you can use app-level retries that get a new connection (from one of the live nodes).
+
+=== 7. Clean up.
+
+Stop the Spring app by doing `Ctrl-C` in the respective shell.
+To stop and erase all data of the Yugabyte cluster run
+
+[source,sh]
+----
+./bin/yb-ctl destroy
+----
+
+NOTE: To just stop the cluster but keep that data run `./bin/yb-ctl stop`.
+You can then start and reuse the cluster with `./bin/yb-ctl start`

@@ -1,4 +1,4 @@
-package com.example.spring.jpa.springdatajpaexample;
+package com.example.yugabytedb.springdataexample;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

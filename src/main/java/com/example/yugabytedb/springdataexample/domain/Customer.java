@@ -1,4 +1,4 @@
-package com.example.spring.jpa.springdatajpaexample.domain;
+package com.example.yugabytedb.springdataexample.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

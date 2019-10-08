@@ -1,4 +1,4 @@
-package com.example.spring.jpa.springdatajpaexample.config;
+package com.example.yugabytedb.springdataexample.config;
 
 import com.yugabyte.spring.AbstractYugabyteConfiguration;
 import com.yugabyte.ysql.YBClusterAwareDataSource;
@@ -9,27 +9,10 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfiguration extends AbstractYugabyteConfiguration {
 
+    // Optional: Override the dataSource bean to customize the data source.
+    // Default: create a YBClusterAwareDataSource() with default settings.
+    // The sample code below is the equivalent of the (data source) config from the application.properties.
     /*
-     * Required: Set package where the Entity classes are declared.
-     */
-    @Override
-    public String packagesToScan() {
-        return "com.example.spring.jpa.springdatajpaexample.domain";
-    }
-
-    /*
-     * Optional: Override generateDdl to set whether to generate DB objects for the managed entities as needed.
-     * Default: false.
-     */
-    @Override
-    public boolean generateDdl() {
-        return true;
-    }
-
-    /*
-     * Optional: Override the dataSource bean to configure the data source.
-     * Default: create a YBClusterAwareDataSource() with default settings.
-     */
     @Override
     @Bean
     public DataSource dataSource() {
@@ -44,8 +27,8 @@ public class DatabaseConfiguration extends AbstractYugabyteConfiguration {
         ds.setUser("yugabyte");
         ds.setPassword("yugabyte");
         ds.setMaxPoolSizePerNode(8);
-        ds.setAutoCommit(true);
         ds.setConnectionTimeoutMs(10000); // 10 seconds.
         return ds;
     }
+    */
 }

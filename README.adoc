@@ -10,8 +10,14 @@ See full instructions https://docs.yugabyte.com/latest/quick-start/install/[here
 For instance on macOS:
 [source,sh]
 ----
-wget https://downloads.yugabyte.com/yugabyte-2.0.0.0-darwin.tar.gz
-tar xvfz yugabyte-2.0.0.0-darwin.tar.gz && cd yugabyte-2.0.0.0/
+sudo ifconfig lo0 alias 127.0.0.2
+sudo ifconfig lo0 alias 127.0.0.3
+sudo ifconfig lo0 alias 127.0.0.4
+sudo ifconfig lo0 alias 127.0.0.5
+sudo ifconfig lo0 alias 127.0.0.6
+sudo ifconfig lo0 alias 127.0.0.7
+wget https://downloads.yugabyte.com/yugabyte-2.0.1.0-darwin.tar.gz
+tar xvfz yugabyte-2.0.1.0-darwin.tar.gz && rm && cd yugabyte-2.0.1.0/
 ./bin/yb-ctl --rf 3 create --tserver_flags="cql_nodelist_refresh_interval_secs=10" --master_flags="tserver_unresponsive_timeout_ms=10000"
 ----
 
@@ -29,7 +35,7 @@ In another shell run
 ----
 git clone https://github.com/yugabyte/spring-data-yugabytedb-example.git
 cd spring-data-yugabytedb-example
-mvn spring-boot:run
+./mvnw spring-boot:run
 ----
 
 === 3. Load Data

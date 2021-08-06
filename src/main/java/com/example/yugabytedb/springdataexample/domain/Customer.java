@@ -1,16 +1,12 @@
 package com.example.yugabytedb.springdataexample.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
-@Table(name = "customer")
+@Table(value = "customer")
 public class Customer {
 
 	@Id
-	@javax.persistence.Id
 	private String id;
 	private String name;
 	private String email;

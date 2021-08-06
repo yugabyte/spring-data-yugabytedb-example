@@ -1,13 +1,23 @@
 package com.example.yugabytedb.springdataexample.config;
 
-import com.yugabyte.spring.AbstractYugabyteConfiguration;
-import com.yugabyte.ysql.YBClusterAwareDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.TransactionManager;
+import com.example.yugabytedb.springdataexample.repo.CustomerJpaRepository;
+
 @Configuration
-public class DatabaseConfiguration extends AbstractYugabyteConfiguration {
+@EnableJdbcRepositories(basePackageClasses = CustomerJpaRepository.class)
+public class DatabaseConfiguration extends AbstractJdbcConfiguration {
 
     // Optional: Override the dataSource bean to customize the data source.
     // Default: create a YBClusterAwareDataSource() with default settings.
@@ -31,4 +41,31 @@ public class DatabaseConfiguration extends AbstractYugabyteConfiguration {
         return ds;
     }
     */
+
+     @Bean
+ DataSource dataSource() {
+     DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+     driverManagerDataSource.setUrl("jdbc:postgresql://localhost:5433/yugabyte");
+     driverManagerDataSource.setUsername("yugabyte");
+     driverManagerDataSource.setPassword("");
+     driverManagerDataSource.setDriverClassName("org.postgresql.Driver");
+     return driverManagerDataSource;
+ }
+
+ @Bean
+ JdbcTemplate jdbcTemplate(@Autowired DataSource dataSource) {
+
+     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+     return jdbcTemplate;
+ }
+ 
+   @Bean
+   NamedParameterJdbcOperations namedParameterJdbcOperations(DataSource dataSource) { 
+       return new NamedParameterJdbcTemplate(dataSource);
+   }
+
+   @Bean
+   TransactionManager transactionManager(DataSource dataSource) {                     
+       return new DataSourceTransactionManager(dataSource);
+   }
 }

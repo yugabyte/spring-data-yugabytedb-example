@@ -16,8 +16,8 @@ sudo ifconfig lo0 alias 127.0.0.4
 sudo ifconfig lo0 alias 127.0.0.5
 sudo ifconfig lo0 alias 127.0.0.6
 sudo ifconfig lo0 alias 127.0.0.7
-wget https://downloads.yugabyte.com/yugabyte-2.0.1.0-darwin.tar.gz
-tar xvfz yugabyte-2.0.1.0-darwin.tar.gz && rm && cd yugabyte-2.0.1.0/
+curl -O https://downloads.yugabyte.com/yugabyte-2.7.2.0-darwin.tar.gz
+tar xvfz yugabyte-2.7.2.0-darwin.tar.gz && cd yugabyte-2.7.2.0/
 ./bin/yb-ctl --rf 3 create --tserver_flags="cql_nodelist_refresh_interval_secs=10" --master_flags="tserver_unresponsive_timeout_ms=10000"
 ----
 
@@ -37,6 +37,11 @@ git clone https://github.com/yugabyte/spring-data-yugabytedb-example.git
 cd spring-data-yugabytedb-example
 ./mvnw spring-boot:run
 ----
+Spring Boot application will connect to all the available servers in the YugabyteDB Cluster.
+
+[source, text]
+2021-08-06 22:28:20.864  INFO 35913 --- [nnection thread] org.postgresql.Driver                    : Getting the list of servers
+2021-08-06 22:28:20.884  INFO 35913 --- [nnection thread] org.postgresql.Driver                    : List of servers got [127.0.0.3, 127.0.0.2, 127.0.0.1]
 
 === 3. Load Data
 

@@ -1,6 +1,6 @@
 = Spring Data YugaByteDB Example
 
-Sample Spring application using the cluster-aware https://github.com/yugabyte/spring-data-yugabytedb[YugabyteDB Spring-data module].
+Sample Spring application using Spring Data YugabyteDB YSQL project and Smart JDBC Driver - https://github.com/yugabyte/spring-data-yugabytedb[YugabyteDB Spring-data module].
 
 == Usage:
 
@@ -36,6 +36,10 @@ In another shell run
 git clone https://github.com/yugabyte/spring-data-yugabytedb-example.git
 cd spring-data-yugabytedb-example
 ./mvnw spring-boot:run
+
+Spring App will connect to all the available nodes in the cluster.
+----
+[source, text]
 ----
 Spring Boot application will connect to all the available servers in the YugabyteDB Cluster.
 

@@ -1,7 +1,5 @@
 package com.example.yugabytedb.springdataexample.controller;
 
-import com.example.yugabytedb.springdataexample.domain.Customer;
-import com.example.yugabytedb.springdataexample.repo.CustomerJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.yugabytedb.springdataexample.domain.Customer;
+import com.example.yugabytedb.springdataexample.repo.CustomerYsqlRepository;
 
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
@@ -19,7 +20,7 @@ public class HomeController {
 	private static int PAGE_SIZE = 20;
 
 	@Autowired
-	private CustomerJpaRepository jpaCustomerRepository;
+	private CustomerYsqlRepository customerRepository;
 
 	private Fairy fairy = Fairy.create();
 
@@ -39,12 +40,13 @@ public class HomeController {
 			                                 person.email(),
 			                                 person.getAddress().toString(),
 			                                 person.dateOfBirth().toString());
-			jpaCustomerRepository.save(customer);
+			customerRepository.save(customer);
+			
 		}
 
 		return String.format("%d new customers saved into the Database.\n Current customer count: %d.",
 		                     amount,
-		                     jpaCustomerRepository.count());
+		                     customerRepository.count());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, path = "/showdb")
@@ -56,12 +58,12 @@ public class HomeController {
 			page = Integer.parseInt(pageArg);
 		}
 
-		jpaCustomerRepository.findAll(PageRequest.of(page, PAGE_SIZE))
+		customerRepository.findAll(PageRequest.of(page, PAGE_SIZE))
 		                     .forEach(item -> result.append(item).append("<br/>"));
 
 		result.append("<hr/>");
 
-		long num_entries = jpaCustomerRepository.count();
+		long num_entries = customerRepository.count();
 		long start = page * PAGE_SIZE + 1;
 		long end = Long.min(page * PAGE_SIZE + PAGE_SIZE, num_entries);
 

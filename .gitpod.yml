@@ -1,0 +1,45 @@
+image:
+  file: .gitpod.DockerFile
+tasks:
+  - name: run
+    init:
+      pip install ipython-sql
+      pip install sqlalchemy
+      pip install psycopg2
+    command: |
+      yb-ctl create  \
+      --rf 3 \
+      --tserver_flags "yb_num_shards_per_tserver=1,ysql_num_shards_per_tserver=1,ysql_beta_features=true,webserver_port=8200" \
+      --master_flags "yb_num_shards_per_tserver=1,ysql_num_shards_per_tserver=1" \
+      --num_shards_per_tserver 1  \
+      --placement_info "cloud1.region1.zone1,cloud2.region2.zone2,cloud3.region3.zone3" 
+      gp ports await 5433
+      gp open 01_Lab_Setup.ipynb
+      yb-ctl status
+ports:
+  - port: 7000
+    onOpen: notify
+  - port: 8200
+    onOpen: notify
+  - port: 37843
+    onOpen: ignore
+  - port: 7100
+    onOpen: ignore
+  - port: 9000-9040
+    onOpen: ignore
+  - port: 9100
+    onOpen: ignore
+  - port: 5433
+    onOpen: ignore
+  - port: 13000
+    onOpen: ignore
+  - port: 9042
+    onOpen: ignore
+  - port: 12000
+    onOpen: ignore
+vscode:
+  extensions:
+    - ms-python.python
+    - ms-toolsai.jupyter
+    - ms-toolsai.jupyter-keymap
+    - ms-toolsai.jupyter-renderers
